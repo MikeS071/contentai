@@ -1,0 +1,141 @@
+{
+  "project": "contentai",
+  "tickets": {
+    "ca-01": {
+      "status": "todo",
+      "phase": 1,
+      "depends": [],
+      "branch": "feat/ca-01",
+      "desc": "Project scaffold: Go module, cobra CLI, config loader, contentai init basic"
+    },
+    "ca-02": {
+      "status": "todo",
+      "phase": 1,
+      "depends": [],
+      "branch": "feat/ca-02",
+      "desc": "LLM client: pluggable provider, api_key_cmd, prompt+context assembly, streaming"
+    },
+    "ca-03": {
+      "status": "todo",
+      "phase": 1,
+      "depends": [],
+      "branch": "feat/ca-03",
+      "desc": "Content store: content/\u003cslug\u003e/ CRUD, meta.json lifecycle state machine, new+list"
+    },
+    "ca-04": {
+      "status": "todo",
+      "phase": 1,
+      "depends": [],
+      "branch": "feat/ca-04",
+      "desc": "Template engine: embed prompts in binary, templates export, local override"
+    },
+    "ca-05": {
+      "status": "todo",
+      "phase": 2,
+      "depends": [
+        "ca-01",
+        "ca-02",
+        "ca-04"
+      ],
+      "branch": "feat/ca-05",
+      "desc": "contentai init full wizard: Perspective Architect, voice.md+blueprint.md generation"
+    },
+    "ca-06": {
+      "status": "todo",
+      "phase": 2,
+      "depends": [
+        "ca-01",
+        "ca-02"
+      ],
+      "branch": "feat/ca-06",
+      "desc": "Knowledge base: kb add-feed/sync/search/add-note, RSS parser, markdown cache"
+    },
+    "ca-07": {
+      "status": "todo",
+      "phase": 3,
+      "depends": [
+        "ca-05",
+        "ca-06"
+      ],
+      "branch": "feat/ca-07",
+      "desc": "contentai ideas: Deep Post Ideas prompt, KB+conversation sourcing, interactive picker"
+    },
+    "ca-08": {
+      "status": "todo",
+      "phase": 3,
+      "depends": [
+        "ca-05",
+        "ca-06"
+      ],
+      "branch": "feat/ca-08",
+      "desc": "contentai draft: Creative Thought Partner + Blog Writer prompt chain, full context"
+    },
+    "ca-09": {
+      "status": "todo",
+      "phase": 3,
+      "depends": [
+        "ca-03",
+        "ca-02"
+      ],
+      "branch": "feat/ca-09",
+      "desc": "contentai qa: 7 built-in checks, LLM auto-fix with diff, approval flow"
+    },
+    "ca-10": {
+      "status": "todo",
+      "phase": 4,
+      "depends": [
+        "ca-03"
+      ],
+      "branch": "feat/ca-10",
+      "desc": "contentai hero: DALL-E client, 8 palette rotation, title overlay, LinkedIn resize"
+    },
+    "ca-11": {
+      "status": "todo",
+      "phase": 4,
+      "depends": [
+        "ca-03"
+      ],
+      "branch": "feat/ca-11",
+      "desc": "Publisher adapters: HTTP+Static, contentai publish with gates"
+    },
+    "ca-12": {
+      "status": "todo",
+      "phase": 5,
+      "depends": [
+        "ca-08",
+        "ca-11"
+      ],
+      "branch": "feat/ca-12",
+      "desc": "contentai social: LLM social copy generation, platform-specific formatting"
+    },
+    "ca-13": {
+      "status": "todo",
+      "phase": 5,
+      "depends": [
+        "ca-12"
+      ],
+      "branch": "feat/ca-13",
+      "desc": "Social adapters: X OAuth1+LinkedIn OAuth2, schedule/post, posting calendar"
+    },
+    "ca-14": {
+      "status": "todo",
+      "phase": 6,
+      "depends": [
+        "ca-13",
+        "ca-09",
+        "ca-10"
+      ],
+      "branch": "feat/ca-14",
+      "desc": "OpenClaw integration: conversation reader, SKILL.md, workspace snippets, install.sh"
+    },
+    "ca-15": {
+      "status": "todo",
+      "phase": 6,
+      "depends": [
+        "ca-14"
+      ],
+      "branch": "feat/ca-15",
+      "desc": "Final audit: E2E test lifecycle, integration tests, docs, README"
+    }
+  }
+}
