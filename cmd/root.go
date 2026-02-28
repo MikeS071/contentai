@@ -19,6 +19,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "contentai.toml", "path to config file")
 	rootCmd.AddCommand(newInitCmd())
 	rootCmd.AddCommand(newKBCmd())
+	rootCmd.AddCommand(newIdeasCmd())
 	rootCmd.AddCommand(newListCmd())
 	rootCmd.AddCommand(newVersionCmd())
 
