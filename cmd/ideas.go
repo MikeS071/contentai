@@ -10,6 +10,7 @@ import (
 	"github.com/MikeS071/contentai/internal/ideas"
 	"github.com/MikeS071/contentai/internal/kb"
 	"github.com/MikeS071/contentai/internal/llm"
+	"github.com/MikeS071/contentai/internal/openclaw"
 	"github.com/MikeS071/contentai/internal/templates"
 	"github.com/spf13/cobra"
 )
@@ -46,11 +47,20 @@ func newIdeasCmd() *cobra.Command {
 				templates.NewEngine(contentDir),
 				content.NewStore(contentDir),
 			)
+			conversation := ""
+			if fromConversations {
+				history, historyErr := openclaw.NewReader(nil).ReadConversationHistory(cfg.OpenClaw)
+				if historyErr != nil {
+					return historyErr
+				}
+				conversation = history
+			}
 
 			outlines, err := gen.Generate(cmd.Context(), ideas.GenerateOptions{
-				FromKB:            fromKB,
-				FromConversations: fromConversations,
-				Count:             count,
+				FromKB:             fromKB,
+				FromConversations:  fromConversations,
+				ConversationSource: conversation,
+				Count:              count,
 			})
 			if err != nil {
 				return err

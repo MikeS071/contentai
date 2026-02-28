@@ -21,8 +21,11 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.AddCommand(newKBCmd())
 	rootCmd.AddCommand(newIdeasCmd())
 	rootCmd.AddCommand(newHeroCmd())
+rootCmd.AddCommand(newPublishCmd())
+	rootCmd.AddCommand(newSocialCmd())
 	rootCmd.AddCommand(newScheduleCmd())
 	rootCmd.AddCommand(newPostCmd())
+	rootCmd.AddCommand(newInstallCmd())
 	rootCmd.AddCommand(newListCmd())
 	rootCmd.AddCommand(newVersionCmd())
 

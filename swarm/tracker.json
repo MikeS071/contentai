@@ -38,7 +38,7 @@
       "sha": "d9346445ba49f79ea7e19aab54afe80355b57265"
     },
     "ca-05": {
-      "status": "todo",
+      "status": "done",
       "phase": 2,
       "depends": [
         "ca-01",
@@ -49,7 +49,7 @@
       "desc": "contentai init full wizard: Perspective Architect, voice.md+blueprint.md generation"
     },
     "ca-06": {
-      "status": "todo",
+      "status": "done",
       "phase": 2,
       "depends": [
         "ca-01",
@@ -59,74 +59,81 @@
       "desc": "Knowledge base: kb add-feed/sync/search/add-note, RSS parser, markdown cache"
     },
     "ca-07": {
-      "status": "todo",
+      "status": "done",
       "phase": 3,
       "depends": [
         "ca-05",
         "ca-06"
       ],
       "branch": "feat/ca-07",
-      "desc": "contentai ideas: Deep Post Ideas prompt, KB+conversation sourcing, interactive picker"
+      "desc": "contentai ideas: Deep Post Ideas prompt, KB+conversation sourcing, interactive picker",
+      "sha": "405f8aae5dd289f84984db1a86a6d67e318c3424"
     },
     "ca-08": {
-      "status": "todo",
+      "status": "done",
       "phase": 3,
       "depends": [
         "ca-05",
         "ca-06"
       ],
       "branch": "feat/ca-08",
-      "desc": "contentai draft: Creative Thought Partner + Blog Writer prompt chain, full context"
+      "desc": "contentai draft: Creative Thought Partner + Blog Writer prompt chain, full context",
+      "sha": "b411d852f9d6336edb6ff654104a5599ab39c49e"
     },
     "ca-09": {
-      "status": "todo",
+      "status": "done",
       "phase": 3,
       "depends": [
         "ca-03",
         "ca-02"
       ],
       "branch": "feat/ca-09",
-      "desc": "contentai qa: 7 built-in checks, LLM auto-fix with diff, approval flow"
+      "desc": "contentai qa: 7 built-in checks, LLM auto-fix with diff, approval flow",
+      "sha": "05112cdf454b5e456f6b352a6c8b4f191da9cf20"
     },
     "ca-10": {
-      "status": "todo",
+      "status": "done",
       "phase": 4,
       "depends": [
         "ca-03"
       ],
       "branch": "feat/ca-10",
-      "desc": "contentai hero: DALL-E client, 8 palette rotation, title overlay, LinkedIn resize"
+      "desc": "contentai hero: DALL-E client, 8 palette rotation, title overlay, LinkedIn resize",
+      "sha": "f21bbe2de3ad78d0a9eba8239743a544883f1490"
     },
     "ca-11": {
-      "status": "todo",
+      "status": "done",
       "phase": 4,
       "depends": [
         "ca-03"
       ],
       "branch": "feat/ca-11",
-      "desc": "Publisher adapters: HTTP+Static, contentai publish with gates"
+      "desc": "Publisher adapters: HTTP+Static, contentai publish with gates",
+      "sha": "a3fbe2a7fb58ace51f79a2880a089029c8752bb4"
     },
     "ca-12": {
-      "status": "todo",
+      "status": "done",
       "phase": 5,
       "depends": [
         "ca-08",
         "ca-11"
       ],
       "branch": "feat/ca-12",
-      "desc": "contentai social: LLM social copy generation, platform-specific formatting"
+      "desc": "contentai social: LLM social copy generation, platform-specific formatting",
+      "sha": "f782c945a94bb0108db071e7f2f5c6460b5685b7"
     },
     "ca-13": {
-      "status": "todo",
+      "status": "done",
       "phase": 5,
       "depends": [
         "ca-12"
       ],
       "branch": "feat/ca-13",
-      "desc": "Social adapters: X OAuth1+LinkedIn OAuth2, schedule/post, posting calendar"
+      "desc": "Social adapters: X OAuth1+LinkedIn OAuth2, schedule/post, posting calendar",
+      "sha": "5afdb00511345f02919acfdd96d4aac803ac06df"
     },
     "ca-14": {
-      "status": "todo",
+      "status": "done",
       "phase": 6,
       "depends": [
         "ca-13",
@@ -134,16 +141,26 @@
         "ca-10"
       ],
       "branch": "feat/ca-14",
-      "desc": "OpenClaw integration: conversation reader, SKILL.md, workspace snippets, install.sh"
+      "desc": "OpenClaw integration: conversation reader, SKILL.md, workspace snippets, install.sh",
+      "sha": "7e6c798cb173cbf3168bbd6a314a61c5dccca438"
     },
     "ca-15": {
-      "status": "todo",
+      "status": "done",
       "phase": 6,
       "depends": [
         "ca-14"
       ],
       "branch": "feat/ca-15",
-      "desc": "Final audit: E2E test lifecycle, integration tests, docs, README"
+      "desc": "Final audit: E2E test lifecycle, integration tests, docs, README",
+      "sha": "b90ef8aee4206a009936411e1c3d818611f2442b"
+    },
+    "ca-16": {
+      "phase": 7,
+      "status": "done",
+      "branch": "feat/portability-audit",
+      "depends": [],
+      "desc": "Portability audit: remove all hardcoded values, make fully portable",
+      "sha": "95455ac"
     }
   }
 }
