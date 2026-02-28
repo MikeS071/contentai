@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"strings"
@@ -63,6 +64,8 @@ func newQACmd() *cobra.Command {
 				Model:       model,
 				Temperature: 0,
 			}
+			store := content.NewStore(contentDir)
+			engine.Store = store
 			result, err := engine.Run(cmd.Context(), qa.RunOptions{
 				Slug:    args[0],
 				AutoFix: effectiveAutoFix,
@@ -70,6 +73,11 @@ func newQACmd() *cobra.Command {
 			})
 			if err != nil {
 				return err
+			}
+			if effectiveAutoFix {
+				if err := reviewAndApplyFixes(cmd.InOrStdin(), cmd.OutOrStdout(), store, args[0], result); err != nil {
+					return err
+				}
 			}
 
 			printQASummary(cmd.OutOrStdout(), result)
@@ -107,4 +115,52 @@ func printQASummary(out io.Writer, result *qa.RunResult) {
 		fmt.Fprintln(out, "\nAuto-fix diff:")
 		fmt.Fprintln(out, result.Diff)
 	}
+}
+
+func reviewAndApplyFixes(in io.Reader, out io.Writer, store *content.Store, slug string, result *qa.RunResult) error {
+	if result == nil || result.QA == nil {
+		return nil
+	}
+	article, err := store.ReadArticle(slug)
+	if err != nil {
+		return err
+	}
+	updated := article
+	approvedAny := false
+	reader := bufio.NewReader(in)
+
+	for cIdx := range result.QA.Checks {
+		check := &result.QA.Checks[cIdx]
+		if len(check.Fixes) == 0 {
+			continue
+		}
+		for fIdx := range check.Fixes {
+			fix := &check.Fixes[fIdx]
+			fmt.Fprintf(out, "\nProposed fix for %s:\n", check.Name)
+			if len(check.Issues) > 0 {
+				fmt.Fprintf(out, "- %s\n", check.Issues[0])
+			}
+			fmt.Fprint(out, "Apply this fix? [y/N]: ")
+			line, readErr := reader.ReadString('\n')
+			if readErr != nil && strings.TrimSpace(line) == "" {
+				fix.Applied = false
+				continue
+			}
+			answer := strings.ToLower(strings.TrimSpace(line))
+			if answer == "y" || answer == "yes" {
+				fix.Applied = true
+				updated = fix.Fixed
+				approvedAny = true
+			} else {
+				fix.Applied = false
+			}
+		}
+	}
+
+	if approvedAny {
+		if err := store.WriteArticle(slug, strings.TrimSpace(updated)+"\n"); err != nil {
+			return err
+		}
+	}
+	return store.WriteQA(slug, result.QA)
 }

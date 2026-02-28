@@ -72,15 +72,11 @@ func (e *Engine) Run(ctx context.Context, opts RunOptions) (*RunResult, error) {
 		if model == "" {
 			model = defaultQAModel
 		}
-		fixed, diff, fixMap, err := AutoFix(ctx, e.LLM, model, article, checks)
+		_, diff, fixMap, err := AutoFix(ctx, e.LLM, model, article, checks)
 		if err != nil {
 			return nil, err
 		}
 		if strings.TrimSpace(diff) != "" {
-			if err := e.Store.WriteArticle(slug, strings.TrimSpace(fixed)+"\n"); err != nil {
-				return nil, err
-			}
-			article = fixed
 			result.Diff = diff
 		}
 		for i := range checks {
