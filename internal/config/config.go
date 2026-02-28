@@ -70,13 +70,15 @@ type ImagesConfig struct {
 }
 
 type PublishConfig struct {
-	Type       string              `toml:"type"`
-	URL        string              `toml:"url"`
-	AuthHeader string              `toml:"auth_header"`
-	AuthCmd    string              `toml:"auth_cmd"`
-	AuthPrefix string              `toml:"auth_prefix"`
-	FieldMap   map[string]string   `toml:"field_map"`
-	Static     StaticPublishConfig `toml:"static"`
+	Type            string              `toml:"type"`
+	URL             string              `toml:"url"`
+	AuthHeader      string              `toml:"auth_header"`
+	APIKeyCmd       string              `toml:"api_key_cmd"`
+	AuthCmd         string              `toml:"auth_cmd"`
+	AuthPrefix      string              `toml:"auth_prefix"`
+	FieldMap        map[string]string   `toml:"field_map"`
+	ResponseURLPath string              `toml:"response_url_path"`
+	Static          StaticPublishConfig `toml:"static"`
 }
 
 type StaticPublishConfig struct {
