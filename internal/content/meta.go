@@ -26,15 +26,17 @@ const (
 )
 
 type Meta struct {
-	Title       string     `json:"title"`
-	Slug        string     `json:"slug"`
-	Summary     string     `json:"summary,omitempty"`
-	Status      Status     `json:"status"`
-	Category    string     `json:"category,omitempty"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	PublishedAt *time.Time `json:"published_at,omitempty"`
-	PublishURL  string     `json:"publish_url,omitempty"`
+	Title             string     `json:"title"`
+	Slug              string     `json:"slug"`
+	Summary           string     `json:"summary,omitempty"`
+	Status            Status     `json:"status"`
+	Category          string     `json:"category,omitempty"`
+	HeroImage         string     `json:"hero_image,omitempty"`
+	HeroLinkedInImage string     `json:"hero_linkedin_image,omitempty"`
+	CreatedAt         time.Time  `json:"created_at"`
+	UpdatedAt         time.Time  `json:"updated_at"`
+	PublishedAt       *time.Time `json:"published_at,omitempty"`
+	PublishURL        string     `json:"publish_url,omitempty"`
 }
 
 type SocialJSON struct {
