@@ -3,13 +3,13 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/MikeS071/contentai/internal/config"
 	"github.com/MikeS071/contentai/internal/content"
 	"github.com/MikeS071/contentai/internal/draft"
 	"github.com/MikeS071/contentai/internal/llm"
+	"github.com/MikeS071/contentai/internal/openclaw"
 	"github.com/MikeS071/contentai/internal/templates"
 	"github.com/spf13/cobra"
 )
@@ -70,11 +70,43 @@ func newDraftCmd() *cobra.Command {
 				d.Temperature = cfg.LLMDraft.Temperature
 			}
 
+			reader := openclaw.NewReader(nil)
+			conversation, err := reader.ReadConversationHistory(cfg.OpenClaw)
+			if err != nil {
+				return err
+			}
+			if cfg.OpenClaw.MemorySearch {
+				memoryMatches, searchErr := reader.SearchMemory(cmd.Context(), cfg.OpenClaw, args[0], 5)
+				if searchErr != nil {
+					return searchErr
+				}
+				if len(memoryMatches) > 0 {
+					var memoryBuilder strings.Builder
+					memoryBuilder.WriteString("MEMORY SEARCH CONTEXT:\n")
+					for _, m := range memoryMatches {
+						memoryBuilder.WriteString("- ")
+						memoryBuilder.WriteString(strings.TrimSpace(m.Text))
+						if src := strings.TrimSpace(m.Source); src != "" {
+							memoryBuilder.WriteString(" (")
+							memoryBuilder.WriteString(src)
+							memoryBuilder.WriteString(")")
+						}
+						memoryBuilder.WriteString("\n")
+					}
+					memoryContext := strings.TrimSpace(memoryBuilder.String())
+					if strings.TrimSpace(conversation) != "" {
+						conversation = strings.TrimSpace(conversation) + "\n\n" + memoryContext
+					} else {
+						conversation = memoryContext
+					}
+				}
+			}
+
 			return d.Draft(cmd.Context(), draft.Options{
 				Slug:         args[0],
 				SourcePath:   sourcePath,
 				Interactive:  interactive,
-				Conversation: readOpenClawConversation(cfg),
+				Conversation: conversation,
 			})
 		},
 	}
@@ -116,26 +148,4 @@ func resolveDraftAPIKey(cfg *config.Config) (string, error) {
 		}
 	}
 	return "", fmt.Errorf("set llm.api_key_cmd in config or provide CONTENTAI_LLM_API_KEY/OPENAI_API_KEY")
-}
-
-func readOpenClawConversation(cfg *config.Config) string {
-	if cfg == nil || !cfg.OpenClaw.Enabled || !cfg.OpenClaw.ChannelHistory {
-		return ""
-	}
-	workspace := strings.TrimSpace(cfg.OpenClaw.Workspace)
-	if workspace == "" {
-		return ""
-	}
-	if strings.HasPrefix(workspace, "~/") {
-		home, err := os.UserHomeDir()
-		if err == nil {
-			workspace = filepath.Join(home, strings.TrimPrefix(workspace, "~/"))
-		}
-	}
-	path := filepath.Join(workspace, "channel-history.md")
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return ""
-	}
-	return strings.TrimSpace(string(data))
 }

@@ -25,6 +25,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.AddCommand(newHeroCmd())
 	rootCmd.AddCommand(newPublishCmd())
 	rootCmd.AddCommand(newSocialCmd())
+	rootCmd.AddCommand(newInstallCmd())
 	rootCmd.AddCommand(newListCmd())
 	rootCmd.AddCommand(newVersionCmd())
 
