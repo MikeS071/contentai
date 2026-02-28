@@ -529,3 +529,203 @@ The agent workflow when user says "write an article about X":
 - Auto-posting without approval (hard rule, never)
 - Video content generation
 - Podcast show notes (could be added as template)
+
+## Testing Strategy
+
+### Per-Ticket Tests (enforced by TDD — tests before code)
+
+Every ticket must include tests that pass before the ticket is marked done. Minimum coverage targets:
+
+| Package | Min Coverage | Test Type |
+|---|---|---|
+| `internal/config` | 90% | Unit: valid/invalid TOML, defaults, validation, `api_key_cmd` execution |
+| `internal/llm` | 80% | Unit: prompt assembly, context truncation, provider routing. Integration: mock HTTP server for API calls |
+| `internal/content` | 90% | Unit: CRUD, state machine transitions (draft→qa_passed→published), meta.json serialization |
+| `internal/templates` | 85% | Unit: embed resolution, local override, export/import roundtrip |
+| `internal/kb` | 80% | Unit: RSS/Atom parsing, markdown cache, search ranking. Integration: mock feed server |
+| `internal/ideas` | 75% | Unit: prompt construction with KB + conversation context, outline parsing |
+| `internal/draft` | 75% | Unit: context assembly (voice + blueprint + examples + source), prompt chain ordering |
+| `internal/qa` | 85% | Unit: each built-in check (no_secrets regex, dash detection, dedup, length), diff generation, approval flow |
+| `internal/images` | 70% | Unit: palette selection by slug hash, resize dimensions, overlay positioning. Integration: mock image API |
+| `internal/publish` | 85% | Unit: HTTP adapter field mapping, auth header construction, static file output. Integration: mock HTTP server |
+| `internal/social` | 85% | Unit: X text truncation (≤280), LinkedIn formatting, adapter interface compliance. Integration: mock API |
+| `internal/schedule` | 90% | Unit: next-slot calculation (timezone, weekday, window), calendar CRUD, preflight validation, due-slot detection |
+| `cmd/*` | 70% | Integration: CLI flag parsing, subcommand routing, error output formatting |
+
+### Integration Test Suite (runs after all branches merged)
+
+Located at `tests/integration/`:
+
+```go
+// TestFullLifecycle — the E2E golden path
+func TestFullLifecycle(t *testing.T) {
+    // 1. contentai init (mock LLM → voice.md + blueprint.md)
+    // 2. contentai kb add-feed (mock RSS server)
+    // 3. contentai kb sync
+    // 4. contentai ideas (mock LLM → 5 outlines)
+    // 5. contentai new test-article --from-idea 1
+    // 6. contentai draft test-article (mock LLM → article.md)
+    // 7. contentai qa test-article (mock LLM → qa.json, auto-fix diff)
+    // 8. contentai hero test-article (mock image API → hero.png + hero-linkedin.png)
+    // 9. contentai publish test-article --approve (mock HTTP endpoint)
+    // 10. contentai social test-article (mock LLM → social.json)
+    // 11. contentai schedule test-article --approve
+    // 12. contentai post --check (mock social APIs → posted)
+    // Verify: all files exist, meta.json states correct, calendar updated
+}
+```
+
+Additional integration tests:
+
+| Test | Validates |
+|---|---|
+| `TestInitWizardFlow` | Full init produces valid voice.md + blueprint.md from mock LLM |
+| `TestKBSyncAndSearch` | Feed sync caches markdown, search returns ranked results |
+| `TestQAGateBlocking` | `publish` fails without QA pass when `qa_gate = true` |
+| `TestPublishGateBlocking` | `publish` fails without `--approve` when gate enabled |
+| `TestSocialGateBlocking` | `schedule` fails without `--approve` (always, not configurable) |
+| `TestNoAutoPost` | Verify no code path posts without explicit approval flag |
+| `TestPaletteRotation` | 8 different slugs → 8 different palettes, deterministic |
+| `TestScheduleTimezone` | Slots respect configured timezone and weekday window |
+| `TestPreflightFailure` | Unreachable image URL → slot marked failed, not posted |
+| `TestStaticPublisher` | Publish with `type = "static"` writes correct files to output_dir |
+| `TestHTTPPublisher` | Publish with `type = "http"` sends correct payload with field mapping |
+| `TestSocialAdapterX` | X adapter truncates to 280 chars, includes image URL |
+| `TestSocialAdapterLinkedIn` | LinkedIn adapter formats multi-paragraph post |
+| `TestStateTransitions` | Invalid transitions (e.g., draft→published skipping QA) rejected when gate on |
+| `TestTemplateOverride` | Local template in `content/templates/` takes precedence over embedded |
+| `TestAPIKeyCmdExecution` | `api_key_cmd` shell execution returns key, caches appropriately |
+
+### Test Commands
+
+```bash
+# Per-package (during development)
+go test ./internal/config/... -v -count=1
+go test ./internal/qa/... -v -count=1
+
+# Full suite (pre-merge)
+go test ./... -v -count=1 -race
+
+# Coverage report
+go test ./... -coverprofile=coverage.out
+go tool cover -func=coverage.out
+
+# Integration only
+go test ./tests/integration/... -v -tags=integration -count=1
+
+# Static analysis
+go vet ./...
+```
+
+### Test Infrastructure
+
+- **Mock LLM server**: `tests/testutil/mock_llm.go` — returns canned responses for each prompt template, validates context assembly
+- **Mock HTTP server**: `tests/testutil/mock_http.go` — captures requests for publisher/social adapter verification
+- **Mock RSS server**: `tests/testutil/mock_rss.go` — serves sample Atom/RSS feeds
+- **Mock image API**: `tests/testutil/mock_images.go` — returns a 1x1 PNG for hero generation tests
+- **Test fixtures**: `tests/fixtures/` — sample voice.md, blueprint.md, article.md, feeds, qa results
+- **Golden files**: `tests/golden/` — expected outputs for template rendering, social copy formatting
+
+## OpenClaw Skill Package
+
+### Skill Files (ship in `skill/` directory)
+
+```
+skill/
+├── SKILL.md              # OpenClaw skill definition + full command reference
+├── AGENTS-SNIPPET.md     # Appended to user's AGENTS.md on install
+├── TOOLS-SNIPPET.md      # Appended to user's TOOLS.md on install
+├── MEMORY-ENTRY.md       # Appended to user's MEMORY.md on install
+└── templates/            # Prompt templates (also embedded in binary)
+    ├── perspective-architect.md
+    ├── voice-extractor.md
+    ├── deep-post-ideas.md
+    ├── creative-thought-partner.md
+    ├── blog-writer.md
+    ├── qa-checklist.md
+    ├── social-copy.md
+    └── hero-prompt.md
+```
+
+### SKILL.md
+
+Teaches OpenClaw when and how to use ContentAI. Includes:
+- Full command reference with examples
+- Configuration reference (`contentai.toml` sections)
+- Content lifecycle diagram
+- OpenClaw agent workflow (what the agent does when user says "write an article")
+- Concepts: voice profile, blueprint, KB, approval gates
+
+### AGENTS-SNIPPET.md
+
+Appended to `~/.openclaw/workspace/AGENTS.md` during `install.sh --openclaw`:
+
+```markdown
+## ContentAI (Go CLI — `contentai`)
+- **Binary:** `contentai` — AI-powered content pipeline: ideas → draft → QA → hero → publish → social.
+- **Skill:** `contentai` — read SKILL.md for full command reference.
+
+### When to use ContentAI
+- User asks to write a blog post, article, or insight
+- User wants article ideas or content suggestions
+- User says "publish" or "schedule" for an existing draft
+- Morning content scan / idea generation routine
+- **DO NOT use for:** social-only posts (no article), quick one-line responses, non-content tasks
+
+### How to use it
+1. **Generate ideas:** `contentai ideas --from-kb --from-conversations --count 5` → present to user
+2. **New article:** `contentai new <slug> --title "..."` (or `--from-idea N`)
+3. **Draft:** `contentai draft <slug>` → present draft → iterate with user feedback
+4. **QA:** `contentai qa <slug>` → show diff of auto-fixes → user approves
+5. **Hero image:** `contentai hero <slug>`
+6. **Publish:** ask user for explicit approval → `contentai publish <slug> --approve`
+7. **Social copy:** `contentai social <slug>` → present copy → user approves
+8. **Schedule:** ask user for explicit approval → `contentai schedule <slug> --approve`
+
+### Hard rules
+- **Never publish or schedule without explicit user approval.** Always ask first.
+- **Always run QA before presenting to user.** Don't show raw drafts.
+- **Include voice.md + blueprint.md context in all content LLM calls.**
+- **Present ideas, don't auto-execute.** User picks which ideas to develop.
+```
+
+### TOOLS-SNIPPET.md
+
+Appended to `~/.openclaw/workspace/TOOLS.md`:
+
+```markdown
+## ContentAI CLI
+- **Binary:** `contentai` — content creation, publishing, and social scheduling pipeline
+- **Config:** `contentai.toml` in project root (LLM provider, publish endpoint, social accounts)
+- **Content dir:** `content/` — voice.md, blueprint.md, KB, and per-slug article directories
+- **Posting calendar:** `content/posting-calendar.json` — managed by `contentai schedule/post`
+- **Cron:** `contentai post --check` should run every 5 min to fire due scheduled posts
+```
+
+### MEMORY-ENTRY.md
+
+Appended to `~/.openclaw/workspace/MEMORY.md`:
+
+```markdown
+## ContentAI CLI
+- **contentai is the standard tool for content creation and publishing.**
+- Go CLI: ideas → draft → QA → hero → publish → social schedule.
+- Installed via `go install github.com/MikeS071/contentai@latest`
+- Voice profile generated during `contentai init` (Perspective Architect prompt) — guides all content generation.
+- Knowledge base (`contentai kb`) tracks RSS feeds and notes for idea sourcing.
+- Three approval gates: QA (configurable), publish (required), social (required, never auto-post).
+- OpenClaw skill at `skills/contentai/SKILL.md`.
+```
+
+### install.sh --openclaw
+
+The installer (same pattern as agent-swarm):
+
+1. Install binary via `go install`
+2. Copy all `skill/` files to `~/.openclaw/workspace/skills/contentai/`
+3. Append AGENTS-SNIPPET.md to AGENTS.md (idempotent check)
+4. Append TOOLS-SNIPPET.md to TOOLS.md (idempotent check)
+5. Append MEMORY-ENTRY.md to MEMORY.md (idempotent check)
+6. Create `content/` directory structure
+7. Install cron: `*/5 * * * * contentai post --check >> logs/contentai-post.log 2>&1`
+8. Print next steps: run `contentai init` to set up voice profile
