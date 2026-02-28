@@ -21,6 +21,7 @@ func newDraftCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "draft <slug>",
 		Short: "Generate or refine an article draft",
+		Long:  "Run the draft pipeline using project context, optional source material, and LLM prompts to produce article markdown.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := loadDraftConfig(cfgFile)

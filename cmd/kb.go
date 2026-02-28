@@ -16,6 +16,7 @@ func newKBCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "kb",
 		Short: "Manage knowledge base feeds, notes, and search",
+		Long:  "Manage RSS/Atom feeds and notes used as source material for idea generation and drafting.",
 	}
 
 	cmd.AddCommand(newKBAddFeedCmd())
@@ -32,6 +33,7 @@ func newKBAddFeedCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add-feed [url]",
 		Short: "Add RSS/Atom feed or import OPML",
+		Long:  "Add a single RSS/Atom feed URL or bulk import feeds from an OPML file.",
 		Args: func(_ *cobra.Command, args []string) error {
 			if strings.TrimSpace(opmlPath) == "" && len(args) != 1 {
 				return fmt.Errorf("requires exactly 1 feed URL argument unless --opml is set")
@@ -71,6 +73,7 @@ func newKBListFeedsCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "list-feeds",
 		Short: "List tracked feeds",
+		Long:  "List feeds currently tracked in the local knowledge base registry.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			store, err := newKBStoreFromConfig(cfgFile)
 			if err != nil {
@@ -92,6 +95,7 @@ func newKBSyncCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "sync",
 		Short: "Fetch latest posts from all tracked feeds",
+		Long:  "Fetch and store new posts from tracked feeds into local markdown files.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			store, err := newKBStoreFromConfig(cfgFile)
 			if err != nil {
@@ -114,6 +118,7 @@ func newKBAddNoteCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "add-note <path>",
 		Short: "Add note/transcript markdown into KB",
+		Long:  "Copy a local markdown note or transcript into the knowledge base notes directory.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			store, err := newKBStoreFromConfig(cfgFile)
@@ -135,6 +140,7 @@ func newKBSearchCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "search <query>",
 		Short: "Search keyword across KB content",
+		Long:  "Search local knowledge base markdown content for keyword matches and snippets.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			store, err := newKBStoreFromConfig(cfgFile)

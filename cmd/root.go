@@ -11,6 +11,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:           "contentai",
 		Short:         "AI-powered content creation and publishing CLI",
+		Long:          "ContentAI is a CLI for end-to-end content workflows: research, ideation, drafting, QA, publishing, and scheduling.",
 		Version:       version,
 		SilenceUsage:  true,
 		SilenceErrors: true,
@@ -20,11 +21,14 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.AddCommand(newInitCmd())
 	rootCmd.AddCommand(newKBCmd())
 	rootCmd.AddCommand(newIdeasCmd())
+	rootCmd.AddCommand(newNewCmd())
 	rootCmd.AddCommand(newDraftCmd())
 	rootCmd.AddCommand(newQACmd())
 	rootCmd.AddCommand(newHeroCmd())
 	rootCmd.AddCommand(newPublishCmd())
 	rootCmd.AddCommand(newSocialCmd())
+	rootCmd.AddCommand(newScheduleCmd())
+	rootCmd.AddCommand(newTemplatesCmd())
 	rootCmd.AddCommand(newListCmd())
 	rootCmd.AddCommand(newVersionCmd())
 

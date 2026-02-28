@@ -119,11 +119,7 @@ func (w *Wizard) loadOrDefaultConfig() (*config.Config, error) {
 	cfgPath := filepath.Join(w.WorkDir, "contentai.toml")
 	cfg, err := config.Load(cfgPath)
 	if err != nil {
-		if !errors.Is(err, os.ErrNotExist) {
-			cfg = config.Default()
-		} else {
-			cfg = config.Default()
-		}
+		cfg = config.Default()
 	}
 
 	if strings.TrimSpace(cfg.Project.Name) == "" {
@@ -141,6 +137,9 @@ func (w *Wizard) loadOrDefaultConfig() (*config.Config, error) {
 	}
 	if strings.TrimSpace(cfg.LLM.Model) == "" {
 		cfg.LLM.Model = defaultLLMModel
+	}
+	if strings.TrimSpace(cfg.LLM.BaseURL) == "" {
+		cfg.LLM.BaseURL = strings.TrimSpace(os.Getenv("CONTENTAI_LLM_BASE_URL"))
 	}
 	return cfg, nil
 }

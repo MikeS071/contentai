@@ -20,6 +20,7 @@ func newSocialCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "social <slug>",
 		Short: "Generate social copy for X and LinkedIn",
+		Long:  "Generate, review, and save social copy derived from the published article and voice profile.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := loadDraftConfig(cfgFile)

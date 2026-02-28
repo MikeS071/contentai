@@ -24,6 +24,7 @@ func newIdeasCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ideas",
 		Short: "Generate structured content ideas from your KB and blueprint",
+		Long:  "Generate idea outlines using voice profile, blueprint, and optional knowledge-base or conversation context.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, err := config.Load(cfgFile)
 			if err != nil {
