@@ -11,6 +11,7 @@ func newTemplatesCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "templates",
 		Short: "Manage prompt templates",
+		Long:  "Manage prompt templates used by generation commands.",
 	}
 
 	var (
@@ -21,6 +22,7 @@ func newTemplatesCmd() *cobra.Command {
 	exportCmd := &cobra.Command{
 		Use:   "export",
 		Short: "Export embedded prompt templates",
+		Long:  "Export embedded prompt templates into a local directory for customization.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			engine := tpl.NewEngine("content")
 			report, err := engine.ExportWithForce(dir, force)

@@ -133,6 +133,11 @@ func (g *Generator) Generate(ctx context.Context, slug string) (*SocialJSON, err
 	if err := g.Save(slug, social); err != nil {
 		return nil, err
 	}
+	meta.Status = content.StatusSocialGenerated
+	meta.UpdatedAt = now
+	if err := g.Store.UpdateMeta(slug, meta); err != nil {
+		return nil, err
+	}
 	return social, nil
 }
 

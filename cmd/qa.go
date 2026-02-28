@@ -19,6 +19,7 @@ func newQACmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "qa <slug>",
 		Short: "Run QA checks and optional auto-fix",
+		Long:  "Execute built-in and LLM-assisted quality checks, optionally apply suggested fixes, and mark the item QA-approved.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := loadDraftConfig(cfgFile)

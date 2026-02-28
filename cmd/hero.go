@@ -19,6 +19,7 @@ func newHeroCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "hero <slug>",
 		Short: "Generate hero images for a content item",
+		Long:  "Generate and save hero images for article and LinkedIn dimensions, then write image metadata to the content item.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(cfgFile)
@@ -44,7 +45,11 @@ func newHeroCmd() *cobra.Command {
 				return err
 			}
 
-			imageGen := hero.NewOpenAIImageGenerator(apiKey, "")
+			baseURL := strings.TrimSpace(os.Getenv("CONTENTAI_IMAGE_BASE_URL"))
+			if baseURL == "" {
+				baseURL = strings.TrimSpace(cfg.LLM.BaseURL)
+			}
+			imageGen := hero.NewOpenAIImageGenerator(apiKey, baseURL)
 			gen := hero.NewGenerator(contentDir, imageGen, templates.NewEngine(contentDir), content.NewStore(contentDir))
 			if model := strings.TrimSpace(cfg.Images.Model); model != "" {
 				gen.Model = model

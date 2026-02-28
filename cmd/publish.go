@@ -19,6 +19,7 @@ func newPublishCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "publish <slug>",
 		Short: "Publish a QA-passed article via configured adapter",
+		Long:  "Publish an item through the configured adapter with QA and approval gates, or output a dry-run payload.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg, err := config.Load(cfgFile)
