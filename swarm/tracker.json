@@ -2,32 +2,40 @@
   "project": "contentai",
   "tickets": {
     "ca-01": {
-      "status": "todo",
+      "status": "done",
       "phase": 1,
       "depends": [],
       "branch": "feat/ca-01",
-      "desc": "Project scaffold: Go module, cobra CLI, config loader, contentai init basic"
+      "desc": "Project scaffold: Go module, cobra CLI, config loader, contentai init basic",
+      "startedAt": "2026-02-28T21:24:26Z",
+      "sha": "f5ef3046ce17b802ac6f903793f2f25a4c7f0668"
     },
     "ca-02": {
-      "status": "todo",
+      "status": "done",
       "phase": 1,
       "depends": [],
       "branch": "feat/ca-02",
-      "desc": "LLM client: pluggable provider, api_key_cmd, prompt+context assembly, streaming"
+      "desc": "LLM client: pluggable provider, api_key_cmd, prompt+context assembly, streaming",
+      "startedAt": "2026-02-28T21:24:26Z",
+      "sha": "f6f8608415a428f410dba099e5598b156246e35f"
     },
     "ca-03": {
-      "status": "todo",
+      "status": "done",
       "phase": 1,
       "depends": [],
       "branch": "feat/ca-03",
-      "desc": "Content store: content/\u003cslug\u003e/ CRUD, meta.json lifecycle state machine, new+list"
+      "desc": "Content store: content/<slug>/ CRUD, meta.json lifecycle state machine, new+list",
+      "startedAt": "2026-02-28T21:24:26Z",
+      "sha": "1a6d785d3f340040041683a43bfd91375e1cf251"
     },
     "ca-04": {
-      "status": "todo",
+      "status": "done",
       "phase": 1,
       "depends": [],
       "branch": "feat/ca-04",
-      "desc": "Template engine: embed prompts in binary, templates export, local override"
+      "desc": "Template engine: embed prompts in binary, templates export, local override",
+      "startedAt": "2026-02-28T21:24:26Z",
+      "sha": "d9346445ba49f79ea7e19aab54afe80355b57265"
     },
     "ca-05": {
       "status": "todo",

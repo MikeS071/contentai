@@ -1,6 +1,6 @@
 [project]
 name = "contentai"
-repo = "."
+repo = "/home/openclaw/projects/contentai"
 base_branch = "main"
 max_agents = 5
 min_ram_mb = 1024
@@ -9,10 +9,16 @@ tracker = "swarm/tracker.json"
 
 [backend]
 type = "codex-tmux"
-model = "o4-mini"
+model = "gpt-5.3-codex"
 bypass_sandbox = true
+binary = "/home/openclaw/.local/bin/codex"
 
 [watchdog]
 interval = "5m"
 max_runtime = "45m"
 max_retries = 2
+
+[notifications]
+type = "telegram"
+telegram_token = "REDACTED"
+telegram_chat_id = "1556514337"
