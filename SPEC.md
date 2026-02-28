@@ -98,7 +98,7 @@ title_overlay = true              # overlay article title on hero image
 [publish]
 # Pluggable publisher adapters
 type = "http"                     # http | static | custom
-url = "https://myblog.com/api/articles"
+url = "https://cms.example.com/api/articles"
 auth_header = "Authorization"
 auth_cmd = "pass show apis/blog-api-key"
 auth_prefix = "Bearer "
