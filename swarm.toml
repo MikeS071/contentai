@@ -20,5 +20,5 @@ max_retries = 2
 
 [notifications]
 type = "telegram"
-telegram_token = "REDACTED"
+telegram_token_cmd = "pass show apis/telegram-bot-token"
 telegram_chat_id = "1556514337"
