@@ -79,7 +79,7 @@ func NewPublisherFromConfig(cfg config.PublishConfig) (Publisher, error) {
 			FieldMap:        cfg.FieldMap,
 			AuthHeader:      strings.TrimSpace(cfg.AuthHeader),
 			AuthToken:       authToken,
-			AuthPrefix:      strings.TrimSpace(cfg.AuthPrefix),
+			AuthPrefix:      cfg.AuthPrefix,
 			ResponseURLPath: strings.TrimSpace(cfg.ResponseURLPath),
 		}), nil
 	case "static":

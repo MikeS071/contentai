@@ -38,7 +38,7 @@ func (c *anthropicClient) Complete(ctx context.Context, req Request) (*Response,
 		"system":      system,
 		"messages":    messages,
 		"temperature": req.Temperature,
-		"max_tokens":  max(1, req.MaxTokens),
+		"max_tokens":  maxTokensOrDefault(req.MaxTokens),
 		"stream":      false,
 	}
 
@@ -104,7 +104,7 @@ func (c *anthropicClient) Stream(ctx context.Context, req Request) (<-chan Strea
 		"system":      system,
 		"messages":    messages,
 		"temperature": req.Temperature,
-		"max_tokens":  max(1, req.MaxTokens),
+		"max_tokens":  maxTokensOrDefault(req.MaxTokens),
 		"stream":      true,
 	}
 	buf, err := json.Marshal(payload)

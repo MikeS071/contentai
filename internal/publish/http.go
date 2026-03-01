@@ -45,13 +45,14 @@ func (p *HTTPPublisher) Publish(ctx context.Context, item PublishItem) (PublishR
 		return PublishResult{}, fmt.Errorf("create request: %w", err)
 	}
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("User-Agent", "Mozilla/5.0 ContentAI/1.0")
 
 	authHeader := strings.TrimSpace(p.cfg.AuthHeader)
 	if authHeader == "" {
 		authHeader = "Authorization"
 	}
 	if strings.TrimSpace(p.cfg.AuthToken) != "" {
-		req.Header.Set(authHeader, p.cfg.AuthPrefix+p.cfg.AuthToken)
+		prefix := p.cfg.AuthPrefix; if prefix != "" && !strings.HasSuffix(prefix, " ") { prefix += " " }; req.Header.Set(authHeader, prefix+p.cfg.AuthToken)
 	}
 
 	client := p.cfg.Client
