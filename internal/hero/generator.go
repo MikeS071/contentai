@@ -26,7 +26,7 @@ import (
 const (
 	defaultOpenAIBaseURL = "https://api.openai.com"
 	defaultImageModel    = "gpt-image-1"
-	defaultImageSize     = "1792x1024"
+	defaultImageSize     = "1536x1024"
 )
 
 type ImageGenerator interface {
@@ -136,7 +136,8 @@ func (g *Generator) BuildPrompt(title string, themes []string, palette Palette) 
 	return g.Templates.GetWithVars("hero-prompt", map[string]interface{}{
 		"Topic":              topic,
 		"Title":              strings.TrimSpace(title),
-		"PaletteDescription": palette.Description,
+		"Description": palette.Description,
+		"Mood":        palette.Mood,
 	})
 }
 

@@ -22,7 +22,7 @@ var (
 	defaultWindowEnd     = "09:30"
 	defaultScheduleTZ    = "UTC"
 	defaultContentDir    = "content"
-	defaultImageSize     = "1792x1024"
+	defaultImageSize     = "1536x1024"
 	defaultAuthHeader    = "Authorization"
 	defaultAuthPrefix    = "Bearer "
 	defaultPublishFormat = "markdown"

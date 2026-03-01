@@ -36,7 +36,7 @@ func (c *openAIClient) Complete(ctx context.Context, req Request) (*Response, er
 		"model":       c.pickModel(req.Model),
 		"messages":    req.Messages,
 		"temperature": req.Temperature,
-		"max_tokens":  req.MaxTokens,
+		"max_tokens":  maxTokensOrDefault(req.MaxTokens),
 		"stream":      false,
 	}
 
@@ -95,7 +95,7 @@ func (c *openAIClient) Stream(ctx context.Context, req Request) (<-chan StreamCh
 		"model":       c.pickModel(req.Model),
 		"messages":    req.Messages,
 		"temperature": req.Temperature,
-		"max_tokens":  req.MaxTokens,
+		"max_tokens":  maxTokensOrDefault(req.MaxTokens),
 		"stream":      true,
 	}
 	buf, err := json.Marshal(payload)
@@ -226,4 +226,11 @@ func backoff(attempt int) time.Duration {
 		attempt = 0
 	}
 	return time.Duration(100*(attempt+1)) * time.Millisecond
+}
+
+func maxTokensOrDefault(v int) int {
+	if v <= 0 {
+		return 4096
+	}
+	return v
 }

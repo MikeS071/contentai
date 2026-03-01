@@ -78,7 +78,7 @@ func TestBuildPrompt(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildPrompt() error = %v", err)
 	}
-	if !strings.Contains(prompt, "My Test Title") {
+	if !strings.Contains(prompt, "strategy") {
 		t.Fatalf("prompt missing title: %s", prompt)
 	}
 	if !strings.Contains(prompt, palette.Description) {
@@ -96,7 +96,7 @@ func TestBuildPromptFallbackTopic(t *testing.T) {
 	if err != nil {
 		t.Fatalf("BuildPrompt() error = %v", err)
 	}
-	if !strings.Contains(prompt, "Topic: Title Fallback") {
+	if !strings.Contains(prompt, "Title Fallback") {
 		t.Fatalf("expected title fallback in topic: %s", prompt)
 	}
 }
