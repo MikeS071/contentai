@@ -103,18 +103,21 @@ func (g *Generator) Generate(ctx context.Context, slug string, opts GenerateOpti
 	}
 	base = ensureBaseSize(base)
 
+	// Website hero: always clean (no text overlay)
+	if err := writePNG(heroPath, base); err != nil {
+		return err
+	}
+
+	// LinkedIn variant: overlay title if enabled, then resize
+	liBase := base
 	if g.TitleOverlay && !opts.NoTitle {
 		overlaid, err := OverlayText(base, meta.Title, palette)
 		if err != nil {
 			return err
 		}
-		base = overlaid
+		liBase = overlaid
 	}
-
-	if err := writePNG(heroPath, base); err != nil {
-		return err
-	}
-	if err := writePNG(g.Store.HeroLinkedInPath(slug), ResizeForLinkedIn(base)); err != nil {
+	if err := writePNG(g.Store.HeroLinkedInPath(slug), ResizeForLinkedIn(liBase)); err != nil {
 		return err
 	}
 
